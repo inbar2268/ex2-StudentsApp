@@ -27,9 +27,6 @@ class StudentAdapter(private val students: List<Student>) :
             // Use the binding to access the views
             binding.studentName.text = student.name
             binding.studentId.text = student.id
-
-            // Set a placeholder image if student.photoUrl is an image resource name
-            val context = binding.root.context
             binding.studentImage.setImageResource(R.drawable.logo) // Default placeholder image
             binding.checkbox.isChecked = student.isChecked
 
