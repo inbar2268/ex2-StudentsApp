@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studentsapp.databinding.ActivityNewStudentBinding
 
-class NewStudentActivity : AppCompatActivity() {
+class NewStudent: AppCompatActivity() {
 
     private lateinit var binding: ActivityNewStudentBinding
 

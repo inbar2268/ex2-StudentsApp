@@ -9,8 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.studentsapp.databinding.ActivityMainBinding
 
+interface OnItemClickListener {
+    fun onItemClick(position: Int)
+    fun onItemClick(student: Student?)
+}
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity() ,OnItemClickListener {
 
     private lateinit var binding: ActivityMainBinding // Initialize binding
     private val students = mutableListOf<Student>()
@@ -40,14 +45,31 @@ class MainActivity : AppCompatActivity() {
 
         // Set up RecyclerView with LinearLayoutManager
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = StudentAdapter(students)
+        val adapter = StudentRecyclerAdapter(students)
+        adapter.listener = this  // Set the listener for handling item clicks
+        binding.recyclerView.adapter = adapter
 
         binding.btnAddStudent.setOnClickListener {
-            val intent = Intent(this, NewStudentActivity::class.java)
+            val intent = Intent(this, NewStudent::class.java)
             saveStudentActivityResultLauncher.launch(intent)
             Log.d("TAG","finish" )
             }
         }
+
+    override fun onItemClick(position: Int) {
+        TODO("Not yet implemented")
     }
+
+    override fun onItemClick(student: Student?) {
+        student?.let {
+
+            val intent = Intent(this, StudentDetails::class.java)
+            intent.putExtra("student_data", it)  // Pass the clicked student data to the next activity
+            startActivity(intent)
+        }
+    }
+}
+
+
 
 

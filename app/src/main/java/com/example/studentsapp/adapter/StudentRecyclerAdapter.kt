@@ -1,39 +1,28 @@
 package com.example.studentsapp
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentsapp.databinding.ItemStudentBinding
 
-class StudentAdapter(private val students: List<Student>) :
-    RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
+
+class StudentRecyclerAdapter(private val students: List<Student>) :
+
+    RecyclerView.Adapter<StudentViewHolder>() {
+    var listener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
-        // Inflate the item layout using ViewBinding
         val binding = ItemStudentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return StudentViewHolder(binding)
+        return StudentViewHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
-        val student = students[position]
-        holder.bind(student)
+        holder.bind(
+            student = students.get(position),
+            position = position
+        )
     }
 
-    override fun getItemCount(): Int = students.size
-
-    inner class StudentViewHolder(private val binding: ItemStudentBinding) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(student: Student) {
-            // Use the binding to access the views
-            binding.studentName.text = student.name
-            binding.studentId.text = student.id
-            binding.studentImage.setImageResource(R.drawable.logo) // Default placeholder image
-            binding.checkbox.isChecked = student.isChecked
-
-            // Handle checkbox click
-            binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
-                student.isChecked = isChecked
-            }
-        }
-    }
+    override fun getItemCount(): Int = students.size ?: 0
 }
