@@ -36,8 +36,8 @@ class StudentDetails : AppCompatActivity() {
         }
 
         binding.editStudentButton.setOnClickListener{
-            //val intent = Intent(this, EditStudent::class.java)
-            //startActivity(intent)
+            val intent = Intent(this, EditStudent::class.java)
+            startActivity(intent)
         }
     }
 }
