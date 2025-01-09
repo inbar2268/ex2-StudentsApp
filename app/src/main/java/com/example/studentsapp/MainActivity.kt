@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity() ,OnItemClickListener {
 
     override fun onItemClick(student: Student?) {
         student?.let {
-
             val intent = Intent(this, StudentDetails::class.java)
             intent.putExtra("student_data", it)  // Pass the clicked student data to the next activity
             startActivity(intent)

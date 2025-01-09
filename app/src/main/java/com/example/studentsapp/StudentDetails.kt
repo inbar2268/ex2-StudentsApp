@@ -37,6 +37,7 @@ class StudentDetails : AppCompatActivity() {
 
         binding.editStudentButton.setOnClickListener{
             val intent = Intent(this, EditStudent::class.java)
+            intent.putExtra("student_data", student)  // Pass the clicked student data to the next activity
             startActivity(intent)
         }
     }
