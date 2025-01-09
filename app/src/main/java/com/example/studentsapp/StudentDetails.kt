@@ -24,20 +24,25 @@ class StudentDetails : AppCompatActivity() {
         binding = ActivityStudentDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        student = intent.getSerializableExtra("student_data") as Student?
+        val studentId = intent.getSerializableExtra("student_id") as String
 
-        student?.let {
-            binding.studentIdTextView.text = "Id: ${it.id}"
-            binding.studentNameTextView.text = "Name: ${it.name}"
-            binding.studentAddressTextView.text = "Address: ${it.address}"
-            binding.studentPhoneTextView.text = "Phone: ${it.phone}"
-            binding.studentIsChecked.isChecked = it.isChecked
-            binding.studentIsChecked.isClickable = false
+        studentId?.let {
+            Model.shared.getStudent(it) { fetchedStudent ->
+                fetchedStudent?.let {
+                    student = it
+                    binding.studentIdTextView.text = "Id: ${it.id}"
+                    binding.studentNameTextView.text = "Name: ${it.name}"
+                    binding.studentAddressTextView.text = "Address: ${it.address}"
+                    binding.studentPhoneTextView.text = "Phone: ${it.phone}"
+                    binding.studentIsChecked.isChecked = it.isChecked
+                    binding.studentIsChecked.isClickable = false
+                }
+            }
         }
 
         binding.editStudentButton.setOnClickListener{
             val intent = Intent(this, EditStudent::class.java)
-            intent.putExtra("student_data", student)  // Pass the clicked student data to the next activity
+            intent.putExtra("student_id", studentId)  // Pass the clicked student data to the next activity
             startActivity(intent)
         }
     }

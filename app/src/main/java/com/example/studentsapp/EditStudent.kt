@@ -20,22 +20,27 @@ class EditStudent : AppCompatActivity() {
         binding = ActivityEditStudentBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        student = intent.getSerializableExtra("student_data") as Student?
+        val studentId = intent.getSerializableExtra("student_id") as String
 
-        student?.let {
-            binding.editTextId.setText(it.id)
-            binding.editTextName.setText(it.name)
-            binding.editTextAddress.setText(it.address)
-            binding.editTextPhone.setText(it.phone)
-            binding.isCkecked.isChecked = it.isChecked
+        studentId?.let {
+            Model.shared.getStudent(it) { fetchedStudent ->
+                fetchedStudent?.let {
+                    student = it
+                    binding.editTextId.setText(it.id)
+                    binding.editTextName.setText(it.name)
+                    binding.editTextAddress.setText(it.address)
+                    binding.editTextPhone.setText(it.phone)
+                    binding.isCkecked.isChecked = it.isChecked
+                }
+            }
         }
 
 //        binding.saveButton.setOnClickListener{
 //
 //        }
-//        binding.cancelButton.setOnClickListener{
-//            finish()
-//        }
+        binding.cancelButton.setOnClickListener{
+            finish()
+        }
 //        binding.deleteButton.setOnClickListener{
 //
 //        }

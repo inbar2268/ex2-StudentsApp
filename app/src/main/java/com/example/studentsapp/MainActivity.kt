@@ -2,9 +2,6 @@ package com.example.studentsapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.studentsapp.databinding.ActivityMainBinding
@@ -14,24 +11,12 @@ interface OnItemClickListener {
     fun onItemClick(student: Student?)
 }
 
+class MainActivity : AppCompatActivity(), OnItemClickListener {
 
-class MainActivity : AppCompatActivity() ,OnItemClickListener {
 
     private lateinit var binding: ActivityMainBinding // Initialize binding
-    private val students = mutableListOf<Student>()
-
-    private val saveStudentActivityResultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            Log.d("TAG","here" )
-            if (result.resultCode == RESULT_OK) {
-                val student = result.data?.getSerializableExtra("student_data") as? Student
-                student?.let {
-                    students.add(student)
-                    binding.recyclerView.adapter?.notifyItemInserted(students.size - 1)
-
-                }
-            }
-        }
+    private var students: List<Student> = emptyList() // Initialize with an empty list
+    private var adapter: StudentRecyclerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,22 +24,21 @@ class MainActivity : AppCompatActivity() ,OnItemClickListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root) // Set the root view
 
-        // Sample students data
-        students.add(Student("John Doe", "12345", "122","Israel", true))
-        students.add(Student("Jane Smith", "67890","122","Israel", false))
-
         // Set up RecyclerView with LinearLayoutManager
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        val adapter = StudentRecyclerAdapter(students)
-        adapter.listener = this  // Set the listener for handling item clicks
+        adapter = StudentRecyclerAdapter(students) // Initialize the adapter with an empty list
+        adapter?.listener = this  // Set the listener for handling item clicks
         binding.recyclerView.adapter = adapter
 
+        // Set click listener to add a new student
         binding.btnAddStudent.setOnClickListener {
             val intent = Intent(this, NewStudent::class.java)
-            saveStudentActivityResultLauncher.launch(intent)
-            Log.d("TAG","finish" )
-            }
+            // Start NewStudent activity
+            startActivityForResult(intent, ADD_STUDENT_REQUEST_CODE)
         }
+
+        getAllStudents()
+    }
 
     override fun onItemClick(position: Int) {
         TODO("Not yet implemented")
@@ -62,13 +46,50 @@ class MainActivity : AppCompatActivity() ,OnItemClickListener {
 
     override fun onItemClick(student: Student?) {
         student?.let {
+
             val intent = Intent(this, StudentDetails::class.java)
-            intent.putExtra("student_data", it)  // Pass the clicked student data to the next activity
+            intent.putExtra("student_id", it.id)  // Pass the clicked student data to the next activity
             startActivity(intent)
         }
     }
+
+    private fun getAllStudents() {
+        Model.shared.getAllStudents { fetchedStudents ->
+            students = fetchedStudents // Assign fetched students to the list
+            adapter?.set(students) // Update the adapter with the fetched data
+            adapter?.notifyDataSetChanged() // Refresh the adapter
+        }
+    }
+
+    // Handle result when a new student is added
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == ADD_STUDENT_REQUEST_CODE && resultCode == RESULT_OK) {
+            // If a student was added, get the updated student and save it to the database
+            val newStudent = data?.getSerializableExtra("student_data") as? Student
+            newStudent?.let {
+                // Add the new student to the database
+                addStudentToDatabase(it)
+            }
+        }
+    }
+
+    // Add student to database and update the list
+    private fun addStudentToDatabase(student: Student) {
+        Model.shared.addStudent(student) {
+            // After adding the student, refresh the list
+            getAllStudents()
+        }
+    }
+
+    companion object {
+        const val ADD_STUDENT_REQUEST_CODE = 1
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getAllStudents()
+    }
+
 }
-
-
-
-

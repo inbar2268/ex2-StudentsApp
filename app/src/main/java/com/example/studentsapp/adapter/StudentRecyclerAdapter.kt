@@ -7,10 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.studentsapp.databinding.ItemStudentBinding
 
 
-class StudentRecyclerAdapter(private val students: List<Student>) :
+class StudentRecyclerAdapter(private var students: List<Student>) :
 
     RecyclerView.Adapter<StudentViewHolder>() {
     var listener: OnItemClickListener? = null
+
+    fun set(students: List<Student>){
+        this.students = students
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
         val binding = ItemStudentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
