@@ -35,6 +35,8 @@ class NewStudent: AppCompatActivity() {
 
                 val newStudent = Student(id, name, phone, address, isChecked)
                 Model.shared.addStudent(newStudent){
+                    val resultIntent = Intent()
+                    setResult(RESULT_OK, resultIntent)
                     finish()
                 }
             }

@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == ADD_STUDENT_REQUEST_CODE && resultCode == RESULT_OK) {
+
             // If a student was added, get the updated student and save it to the database
             val newStudent = data?.getSerializableExtra("student_data") as? Student
             newStudent?.let {

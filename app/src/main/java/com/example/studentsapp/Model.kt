@@ -33,20 +33,38 @@ class Model private constructor(){
         }
     }
 
-    fun addStudent(student: Student, callback: EmptyCallback) {
-        executor.execute{
-            database.studentDao().insertStudent(student)
-            mainHandler.post{
-                callback()
-            }
-        }
-    }
-
     fun getStudent(studentId: String, callback: StudentCallback) {
         executor.execute {
             val student = database.studentDao().getStudentById(studentId)  // Assuming `getStudentById` exists in your DAO
             mainHandler.post {
                 callback(student)
+            }
+        }
+    }
+
+    fun addStudent(student: Student, callback: EmptyCallback) {
+        executor.execute {
+            database.studentDao().insertStudent(student)
+            mainHandler.post {
+                callback()
+            }
+        }
+    }
+
+    fun deleteStudent(student: Student, callback: EmptyCallback) {
+        executor.execute {
+            database.studentDao().deleteStudent(student)
+            mainHandler.post {
+                callback()
+            }
+        }
+    }
+
+    fun updateStudent(student: Student, callback: EmptyCallback) {
+        executor.execute {
+            database.studentDao().updateStudent(student)
+            mainHandler.post {
+                callback()
             }
         }
     }

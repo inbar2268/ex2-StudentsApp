@@ -1,6 +1,7 @@
 package com.example.studentsapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -35,14 +36,22 @@ class EditStudent : AppCompatActivity() {
             }
         }
 
-//        binding.saveButton.setOnClickListener{
-//
-//        }
+        binding.saveButton.setOnClickListener{
+
+        }
+
         binding.cancelButton.setOnClickListener{
             finish()
         }
-//        binding.deleteButton.setOnClickListener{
-//
-//        }
+
+        binding.deleteButton.setOnClickListener{
+            student?.let {
+                    it1 -> Model.shared.deleteStudent(it1){
+                    val resultIntent = Intent()
+                    setResult(RESULT_OK, resultIntent)
+                    finish()
+                }
+            }
+        }
     }
 }
