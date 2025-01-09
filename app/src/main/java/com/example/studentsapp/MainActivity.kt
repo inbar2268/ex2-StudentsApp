@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() ,OnItemClickListener {
         binding.recyclerView.adapter = adapter
 
         binding.btnAddStudent.setOnClickListener {
-            val intent = Intent(this, NewStudentActivity::class.java)
+            val intent = Intent(this, NewStudent::class.java)
             saveStudentActivityResultLauncher.launch(intent)
             Log.d("TAG","finish" )
             }
@@ -62,11 +62,10 @@ class MainActivity : AppCompatActivity() ,OnItemClickListener {
 
     override fun onItemClick(student: Student?) {
         student?.let {
-            Toast.makeText(this, "Clicked: ${it.name}", Toast.LENGTH_SHORT).show()
 
-//            val intent = Intent(this, NewStudentActivity::class.java)
-//            intent.putExtra("student_data", it)  // Pass the clicked student data to the next activity
-//            startActivity(intent)
+            val intent = Intent(this, StudentDetails::class.java)
+            intent.putExtra("student_data", it)  // Pass the clicked student data to the next activity
+            startActivity(intent)
         }
     }
 }
